@@ -14,9 +14,9 @@ class Database {
         return conn;
     }
 
-    public async runQuery(conn: mysql.Connection, sql: string) {
+    public async runQuery(conn: mysql.Connection, sql: string, values: any[]) {
         return new Promise((resolve, reject)=>{
-            conn.query(sql,function(err, results,  fields){
+            conn.query(sql, values, function(err, results,  fields){
                 try {
                     resolve(results);
                 } catch (error) {

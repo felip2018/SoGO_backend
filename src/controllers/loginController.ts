@@ -5,9 +5,8 @@ class LoginController {
 
     public async startSession(rq: Request, rs: Response) {
         try {
-            
             const conn = database.connection();
-            const response = await database.runQuery(conn, 'SELECT * FROM tipo_documento;');
+            const response = await database.runQuery(conn, 'SELECT * FROM tipo_documento', []);
             conn.end();
             return rs.status(200).json({
                 message: 'starts session',
