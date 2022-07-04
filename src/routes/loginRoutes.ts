@@ -1,7 +1,17 @@
-import express from 'express';
+import { Router } from 'express';
 import loginController from '../controllers/loginController';
-const router = express.Router();
 
-router.get('/start-session', loginController.startSession);
+class LoginRouter {
+    public router: Router = Router();
 
-export = router;
+    constructor() {
+        this.initializeRoutes();
+    }
+
+    private initializeRoutes() {
+        this.router.get('/start-session', loginController.startSession);
+    }
+}
+
+const loginRouter = new LoginRouter();
+export default loginRouter.router; 

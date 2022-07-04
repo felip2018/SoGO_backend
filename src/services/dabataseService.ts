@@ -2,7 +2,7 @@ import mysql from 'mysql2';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-class Database {
+class DatabaseService {
 
     public connection() {
         const conn = mysql.createConnection({
@@ -14,7 +14,7 @@ class Database {
         return conn;
     }
 
-    public async runQuery(conn: mysql.Connection, sql: string, values: any[]) {
+    public async runQuery(conn: mysql.Connection, sql: string, values: any[]): Promise<any> {
         return new Promise((resolve, reject)=>{
             conn.query(sql, values, function(err, results,  fields){
                 try {
@@ -27,5 +27,5 @@ class Database {
     }
 }
 
-const database = new Database();
-export default database;
+const databaseService = new DatabaseService();
+export default databaseService;
