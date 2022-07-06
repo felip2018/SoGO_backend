@@ -2,10 +2,12 @@ import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import loginRoute from './routes/loginRoutes';
+import cors from 'cors';
 
 const router: Express = express();
 
 router.use(morgan('dev'));
+router.use(cors());
 router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 

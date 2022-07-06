@@ -9,7 +9,7 @@ class LoginRouter {
     }
 
     private initializeRoutes() {
-        this.router.get('/start-session', loginController.startSession);
+        this.router.post('/start-session', loginController.startSession);
     }
 }
 

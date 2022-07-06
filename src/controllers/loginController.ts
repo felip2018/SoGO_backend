@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import IHttpResponseModel from '../models/HttpResponseModel';
 import databaseService from '../services/dabataseService';
 
 class LoginController {
@@ -7,14 +8,46 @@ class LoginController {
         try {
             const { body } = rq;
             const conn = databaseService.connection();
-            const response = await databaseService.runQuery(conn,
-                'SELECT * FROM user WHERE username = ? AND password = ?', [
-                body.username,
-                body.password
-            ]);
-            return rs.status(200).json(response).end();
-        } catch (error) {
-            return rs.status(409).json(error).end();    
+            const result = await databaseService.runQuery(conn,
+                `SELECT 
+                u.id as userId,
+                u.person_id as personId,
+                u.profile_id as profileId,
+                u.username,
+                u.image,
+                u.branch_office_id as branchOfficeId,
+                u.register_status as registerStatus,
+                p.document,
+                p.first_name as firstName,
+                p.second_name as secondName,
+                p.first_surname as firstSurname,
+                p.second_surname as secondSurname,
+                p.phone,
+                p.email
+                FROM user u
+                INNER JOIN person p ON p.id = u.person_id
+                WHERE u.username = ? AND u.password = ?`, [body.username, body.password]);
+
+            if(result[0]) {
+
+                const response: IHttpResponseModel = {
+                    data: result[0],
+                    code: 200,
+                    message: 'ok'
+                };
+                return rs.status(200).json(response).end();
+
+            } else {
+                const error: IHttpResponseModel = {
+                    data: '',
+                    code: 409,
+                    message: 'Usuario y/o clave incorrectos, por favor verifique'
+                };
+                throw error;
+            }
+
+        } catch (error: any) {
+            return rs.status(error?.code || 500).json(error).end();    
         }
     }
 
