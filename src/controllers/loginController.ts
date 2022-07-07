@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import IHttpResponseModel from '../models/HttpResponseModel';
 import databaseService from '../services/dabataseService';
+import { mapHttpRespose } from '../utils/mapperUtil';
 
 class LoginController {
 
@@ -29,14 +30,7 @@ class LoginController {
                 WHERE u.username = ? AND u.password = ?`, [body.username, body.password]);
 
             if(result[0]) {
-
-                const response: IHttpResponseModel = {
-                    data: result[0],
-                    code: 200,
-                    message: 'ok'
-                };
-                return rs.status(200).json(response).end();
-
+                return rs.status(200).json(mapHttpRespose(result[0], 200, 'ok')).end();
             } else {
                 const error: IHttpResponseModel = {
                     data: '',
@@ -45,7 +39,6 @@ class LoginController {
                 };
                 throw error;
             }
-
         } catch (error: any) {
             return rs.status(error?.code || 500).json(error).end();    
         }

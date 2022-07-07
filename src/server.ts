@@ -1,8 +1,10 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
-import loginRoute from './routes/loginRoutes';
 import cors from 'cors';
+
+import loginRoute from './routes/loginRoutes';
+import maintenanceRoutes from './routes/maintenanceRoutes';
 
 const router: Express = express();
 
@@ -14,6 +16,7 @@ router.use(express.json());
 
 /** Routes */
 router.use('/login', loginRoute);
+router.use('/maintenance-data', maintenanceRoutes);
 
 /** Error handling */
 router.use((req, res, next) => {

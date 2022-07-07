@@ -1,5 +1,6 @@
 import mysql from 'mysql2';
 import * as dotenv from 'dotenv';
+import { getDatabaseError, mapHttpRespose } from '../utils/mapperUtil';
 dotenv.config();
 
 class DatabaseService {
@@ -14,14 +15,15 @@ class DatabaseService {
         return conn;
     }
 
-    public async runQuery(conn: mysql.Connection, sql: string, values: any[]): Promise<any> {
+    public async runQuery(conn: mysql.Connection, sql: any, values: any[]): Promise<any> {
         return new Promise((resolve, reject)=>{
-            conn.query(sql, values, function(err, results,  fields){
-                try {
-                    resolve(results);
-                } catch (error) {
+            conn.query(sql, values, function(err, results){
+                if (err) {
+                    console.log('runQuery[err]', err);
+                    const error = mapHttpRespose('', 409, getDatabaseError(err.sqlState || '0').message)
                     reject(error);
                 }
+                resolve(results);
             })
         });
     }
