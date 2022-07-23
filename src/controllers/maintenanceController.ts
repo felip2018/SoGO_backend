@@ -23,9 +23,9 @@ class MaintenanceController {
 
     public async selectData(rq: Request, rs: Response) {
         try {
-            const { table, fields, conditions } = rq.body;
+            const { table, fields, conditions = null, order = null } = rq.body;
             const conn = databaseService.connection();
-            const sql = mapSelectSql(table, fields, conditions);
+            const sql = mapSelectSql(table, fields, conditions, order);
             const result: any[] = await databaseService.runQuery(conn, sql, []);
             return rs.status(200).json(mapHttpRespose(result, 200, 'ok')).end();
         } catch (error) {

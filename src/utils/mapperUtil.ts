@@ -2,6 +2,7 @@ import IHttpResponseModel from "../models/HttpResponseModel";
 import ISqlCondition from "../models/SqlConditionModel";
 import { databaseErrors } from "./objectsToMap/databaseErrors";
 import { tablesFields } from "./objectsToMap/tableFiels";
+import IOrderByModel from "../models/SqlOrderByModel";
 
 export const mapInsertSql = (table:  any | string, fields: any[], body: any) => {
     let sql = `INSERT INTO ${table} (`;
@@ -14,14 +15,20 @@ export const mapInsertSql = (table:  any | string, fields: any[], body: any) => 
     return sql;
 }
 
-export const mapSelectSql = (table: any | string, fields: string[], conditions: ISqlCondition[]) => {
+export const mapSelectSql = (table: any | string, fields: string[], conditions?: ISqlCondition[], order?: IOrderByModel) => {
     let sql = `SELECT `;
     fields.forEach((field, index) => {
-        sql += (index != fields.length - 1) ? `${field}, ` : `${field} FROM ${table} WHERE `
+        sql += (index != fields.length - 1) ? `${field}, ` : `${field} FROM ${table}`
     });
-    conditions.forEach((condition, index) => {
-        sql += (index != conditions.length - 1) ? `${condition.field} = '${condition.value}' AND ` : `${condition.field} = '${condition.value}'`
-    });
+    if (conditions) {
+        sql += ' WHERE ';
+        conditions.forEach((condition, index) => {
+            sql += (index != conditions.length - 1) ? `${condition.field} = '${condition.value}' AND ` : `${condition.field} = '${condition.value}'`
+        });
+    }
+    if (order) {
+        sql += ` ORDER BY ${order.field} ${order.sort} `
+    }
     return sql;
 }
 
